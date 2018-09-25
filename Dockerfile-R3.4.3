@@ -108,4 +108,18 @@ RUN wget -P /tmp/ https://github.com/just-containers/s6-overlay/releases/downloa
   
 CMD ["/init"]
 
+## Install R packages
+
+COPY install_dependencies.R /tmp/install_dependencies.R
+RUN R -f /tmp/install_dependencies.R && \
+    rm -rf /tmp/*
+
+COPY app.R /srv/shiny-server/testapp/app.R
+
+## activate shiny server pro
+
+ARG SHINY_PRO_KEY
+
+RUN [ ! -z "$SHINY_PRO_KEY" ] && \
+    /opt/shiny-server/bin/license-manager activate ${SHINY_PRO_KEY}
 
